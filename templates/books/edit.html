@@ -11,7 +11,7 @@
     <ul>
         <li>Title: <input id="title" type="text" required/></li>
         <li>Authors: <select id="authors" multiple></select></li>
-        <li>ISBN: <input id="isbn" type="text" maxlength="17"/></li>
+        <li>ISBN: <input id="isbn" type="text" maxlength="17" minlength="9"/></li>
         <li>Price: <input id="price" type="number" required/></li>
     </ul>
 
@@ -40,6 +40,24 @@
         });
     }
 
+    function get_book(book_id){
+        $.ajax({
+            type: "GET",
+            url: '/api/books/' + book_id,
+            contentType: 'json',
+            async: false,
+            statusCode: {
+                200: function (resp) {
+                    console.log(resp);
+                },
+                404: function () {
+                    alert('Book not found');
+                    window.location.replace('/');
+                }
+            }
+        });
+    }
+
 
     function get_page_type() {
         const pathname = window.location.pathname;
@@ -51,7 +69,7 @@
         }
     }
 
-
+    let item_id = get_page_type();
 
     $('#save').on('click', function () {
         var data = {
@@ -60,25 +78,21 @@
             isbn: $('#isbn').val(), price: $('#price').val()
         };
         if (data.title.length && data.price.length) {
+
             var url = '/api/books';
-
-            $.ajax({
-            type: "POST",
-            url: url,
-            contentType: 'json',
-            async: false,
-            success: function (resp) {
-                let author_selector = $('#authors');
-                author_selector.empty();
-
-                $.each(resp, function (i, author) {
-                    author_selector.append($('<option>', {
-                        value: author.id,
-                        text: author.full_name
-                    }));
-                })
+            if (item_id !== 0) {
+                url += '/' + item_id;
             }
-        });
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: 'json',
+                async: false,
+                data: JSON.stringify(data),
+                success: function (resp) {
+                    window.location.replace(/edit/ + resp.id);
+                }
+            });
         } else {
             alert('title and price are required');
         }
@@ -87,10 +101,11 @@
     $(document).ready(function () {
 
         get_authors();
-        if (get_page_type() !== 0){
+        if (item_id === 0){
             $('#page_title').text('CREATE');
         } else {
             $('#page_title').text('EDIT');
+            get_book(item_id);
         }
     });
 </script>

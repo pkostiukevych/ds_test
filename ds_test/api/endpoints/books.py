@@ -3,14 +3,14 @@ from math import ceil
 
 from django.http import JsonResponse, HttpResponseForbidden
 
-from ds_test.models import Book
+from ds_test.models import Book, Author
 
 
 def book_api(request, book_id=None):
     if request.method == 'GET':
         if book_id:
             try:
-                book = Book.objects.prefetch_related('authors').get(id=1)
+                book = Book.objects.prefetch_related('authors').get(id=book_id)
             except Book.DoesNotExist:
                 return JsonResponse({'reason': 'book_not_found'}, status=404, safe=False)
             return JsonResponse(serializer(book), status=200, safe=False)
@@ -35,15 +35,23 @@ def book_api(request, book_id=None):
             )
 
     if request.method == 'POST':
+        # TODO add validation
         request_data = json.loads(request.body)
         if book_id:
             try:
                 book = Book.objects.get(id=1)
             except Book.DoesNotExist:
                 return JsonResponse(None, status=404, safe=False)
-
         else:
-            book = Book.objects.all()
+            book = Book()
+
+        authors = Author.objects.filter(id__in=request_data.pop('authors', []))
+
+        for attr, val in request_data.items():
+            setattr(book, attr, val)
+        book.save()
+        book.authors.set(authors)
+        return JsonResponse(serializer(book), status=201, safe=False)
 
     return HttpResponseForbidden(('GET', 'POST',))
 
