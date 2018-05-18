@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p id="page_title">EDIT OR CREATE</p>
+
+    <ul>
+        <li>Title: <input id="title" type="text" required/></li>
+        <li>Authors: <select id="authors" multiple></select></li>
+        <li>ISBN: <input id="isbn" type="text" maxlength="17"/></li>
+        <li>Price: <input id="price" type="number" required/></li>
+    </ul>
+
+    <button id="save">Save</button>
+</body>
+
+
+<script>
+    function get_authors(){
+        $.ajax({
+            type: "GET",
+            url: '/api/authors',
+            contentType: 'json',
+            async: false,
+            success: function (resp) {
+                let author_selector = $('#authors');
+                author_selector.empty();
+
+                $.each(resp, function (i, author) {
+                    author_selector.append($('<option>', {
+                        value: author.id,
+                        text: author.full_name
+                    }));
+                })
+            }
+        });
+    }
+
+
+    function get_page_type() {
+        const pathname = window.location.pathname;
+        if (pathname.indexOf('create') !== -1){
+            return 0;
+        } else {
+            let splited = pathname.split('/');
+            return parseInt(splited[splited.length -1]);
+        }
+    }
+
+
+
+    $('#save').on('click', function () {
+        var data = {
+            title: $('#title').val(),
+            authors: $('#authors').val(),
+            isbn: $('#isbn').val(), price: $('#price').val()
+        };
+        if (data.title.length && data.price.length) {
+            var url = '/api/books';
+
+            $.ajax({
+            type: "POST",
+            url: url,
+            contentType: 'json',
+            async: false,
+            success: function (resp) {
+                let author_selector = $('#authors');
+                author_selector.empty();
+
+                $.each(resp, function (i, author) {
+                    author_selector.append($('<option>', {
+                        value: author.id,
+                        text: author.full_name
+                    }));
+                })
+            }
+        });
+        } else {
+            alert('title and price are required');
+        }
+    });
+
+    $(document).ready(function () {
+
+        get_authors();
+        if (get_page_type() !== 0){
+            $('#page_title').text('CREATE');
+        } else {
+            $('#page_title').text('EDIT');
+        }
+    });
+</script>
+</html>

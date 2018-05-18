@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p>BOOKS LIST</p>
+
+    <div style="width: 40%; float: left;">
+
+        <table id="books_list">
+            <thead>
+                <tr>
+                    <td><button id="prev" class="get_page" disabled><<</button><span id="pagination"></span><button id="next" class="get_page" disabled>>></button></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a href="/create">add new</a></td>
+                </tr>
+                <tr>
+                    <th width="30%">Title</th>
+                    <th width="30%">Authors</th>
+                    <th width="30%">ISBN</th>
+                    <th>Price</th>
+                    <th width="10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<script>
+    function get_data(page) {
+        $.ajax({
+            type: "GET",
+            url: '/api/books',
+            contentType: 'json',
+            data: {'page': page},
+            async: false,
+            success: function (resp) {
+                let data = resp.data;
+                $("#books_list > tbody").empty();
+                for (let i=0; i < data.length; i++){
+                    $('#books_list').append(
+                        '<tr><td>' + data[i].title + '</td><td>' + data[i].authors + '</td><td>'
+                        + data[i].isbn + '</td><td>' + data[i].price + '</td><td><a href="/edit/' + data[i].id +'">edit</a></td></tr>'
+                    );
+                }
+
+                build_pagination(resp.total_books, resp.page);
+            }
+        });
+    }
+
+
+    function build_pagination(total_books, page){
+        console.log(total_books);
+        console.log(page);
+        let max_page = Math.ceil(total_books / 50);
+        let pagination = $('#pagination');
+
+        pagination.empty();
+        $('#prev').prop('disabled', true).removeAttr('value');
+        $('#next').prop('disabled', true).removeAttr('value');
+        if (max_page === 1) {
+            pagination.append('<button type="button" value="1" disabled>1</button>');
+            $('#prev').prop('disabled', true);
+            $('#next').prop('disabled', true);
+        } else {
+            let pagination_body = '';
+            if (page === 1) {
+                $('#prev').prop('disabled', true);
+                {#pagination_body += '<button type="button" value="1" disabled>1</button>';#}
+            } else {
+                $('#prev').prop('disabled', false).val(page - 1);
+                pagination_body += '<button type="button" class="get_page" value="1">1</button>';
+            }
+
+            if (page - 1 > 1) {
+                pagination_body += '...'
+            }
+
+            if (page + 1 < max_page) {
+                $('#next').prop('disabled', false).val(page + 1);
+                pagination_body += '<button type="button" value="'+ page +'" disabled>' + page + '</button>...';
+                pagination_body += '<button type="button" class="get_page" value="'+ max_page +'">' + max_page + '</button>';
+            } else if (page === max_page){
+                $('#next').prop('disabled', true);
+                pagination_body += '<button type="button" value="'+ page +'" disabled>' + page + '</button>';
+            } else {
+                $('#next').prop('disabled', false).val(page + 1);
+                 pagination_body += '<button type="button" value="'+ page +'" disabled>' + page + '</button>';
+                 pagination_body += '<button type="button" class="get_page" value="'+ max_page +'">' + max_page + '</button>';
+            }
+
+            pagination.append(pagination_body);
+            pagination.find('.get_page').on('click', function () {
+                get_data($(this).val());
+            });
+        }
+
+    }
+
+    $('.get_page').on('click', function () {
+        get_data($(this).val());
+    });
+
+
+    $(document).ready(function () {
+        get_data(1);
+    });
+
+</script>
+</html>

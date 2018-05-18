@@ -1,0 +1,56 @@
+[
+  {
+    "model": "ds_test.author",
+    "pk": 1,
+    "fields": {
+      "first_name": "James",
+      "last_name": "Gleick"
+    }
+  },
+  {
+    "model": "ds_test.author",
+    "pk": 2,
+    "fields": {
+      "first_name": "Thomas",
+      "last_name": "Cormen"
+    }
+  },
+  {
+    "model": "ds_test.author",
+    "pk": 3,
+    "fields": {
+      "first_name": "Charles",
+      "last_name": "Leiserson"
+    }
+  },
+  {
+    "model": "ds_test.book",
+    "pk": 1,
+    "fields": {
+      "title": "Chaos",
+      "authors": [1],
+      "isbn": "978-0-749-38606-1",
+      "price": 10.99
+    }
+  },
+  {
+    "model": "ds_test.book",
+    "pk": 2,
+    "fields": {
+      "title": "Isaac Newton",
+      "authors": [1],
+      "isbn": "1400032954",
+      "price": 12.49
+    }
+  },
+  {
+    "model": "ds_test.book",
+    "pk": 2,
+    "fields": {
+      "title": "Introduction to Algorithms",
+      "authors": [2, 3],
+      "isbn": "978-0-262-03384-8",
+      "price": 29.99
+    }
+  }
+]
