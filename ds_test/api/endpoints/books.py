@@ -17,7 +17,9 @@ def book_api(request, book_id=None):
             return JsonResponse(serializer(book), status=200, safe=False)
         else:
             page = int(request.GET.get('page', 1))
-            books = Book.objects.prefetch_related('authors').all()
+            sort = request.GET.get('sort', 'desc')
+            books = Book.objects.prefetch_related('authors').all()\
+                .order_by('{sort}publish_date'.format(sort='-' if sort=='desc' else ''))
             books_count = books.count()
 
             if books_count and page > ceil(books_count / 50):

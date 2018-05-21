@@ -36,7 +36,7 @@
                     <th width="20%">Authors</th>
                     <th width="20%">ISBN</th>
                     <th>Price</th>
-                    <th width="15%">Publish date</th>
+                    <th width="15%" id="pub_date_sort"><a href="#">Publish date <span>&uarr;</span></a></th>
                     <th width="10%"></th>
                 </tr>
             </thead>
@@ -56,10 +56,11 @@
 
 
 <script>
-    function get_data(page) {
+    var current_page = 1;
+    function get_data(page, sort='desc') {
         $.ajax({
             type: "GET",
-            url: '/api/books',
+            url: '/api/books?sort=' + sort,
             contentType: 'json',
             data: {'page': page},
             async: false,
@@ -78,7 +79,20 @@
                 build_pagination(resp.total_books, resp.page);
             }
         });
+        current_page = page;
     }
+
+
+    $('#pub_date_sort').on('click', function () {
+        var current_sort = $(this).find('span');
+        if (current_sort.text() == '↑'){
+            current_sort.text('↓');
+            get_data(current_page, 'desc')
+        } else {
+            current_sort.text('↑');
+            get_data(current_page, 'acs');
+        }
+    });
 
 
     function build_pagination(total_books, page){
@@ -135,14 +149,13 @@
     $(document).ready(function () {
 
         var current_year = (new Date()).getFullYear();
-        console.log(current_year);
         if (current_year == 2018) {
             $('#current-year').text(2018);
         } else {
             $('#current-year').text('2018 - ' + current_year);
         }
 
-        get_data(1);
+        get_data(current_page);
         var cookies = decodeURIComponent(document.cookie).split(';');
         if (getCookie('is_manager') != 1) {
             $('.manager_only').remove();

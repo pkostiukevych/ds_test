@@ -52,7 +52,6 @@
             async: false,
             statusCode: {
                 200: function (resp) {
-                    console.log(resp);
                     if ('authors' in resp) {
                         $.map(resp.authors, function(author){
                            $('#authors option[value="'+author.id+'"]').prop('selected', true);
