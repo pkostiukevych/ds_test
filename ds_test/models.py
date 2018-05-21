@@ -27,3 +27,13 @@ class Book(models.Model):
         return ', '.join([author.full_name() for author in self.authors.all()])
 
     # TODO add isbn correctness check
+
+
+class Request(models.Model):
+    time = models.DateTimeField(blank=False, null=False)
+    path = models.CharField(max_length=2000, null=True, blank=True)
+    method = models.CharField(max_length=7, null=False, blank=False)
+    protocol = models.CharField(max_length=64, null=True, blank=True)
+    remote_addr = models.CharField(max_length=64, null=True, blank=True)
+    http_user_agent = models.TextField(null=True, blank=True)
+    response_status = models.PositiveIntegerField(blank=False, null=False)

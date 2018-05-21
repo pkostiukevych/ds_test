@@ -48,7 +48,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'ds_test.middlewares.check_user.set_user_type'
+    'ds_test.middleware.check_user.set_user_type',
+    'ds_test.middleware.process_requests.save'
 ]
 
 
