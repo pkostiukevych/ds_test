@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 def set_user_type(get_response):
     def middleware(request):
-        if request.user and request.user.is_staff:
+        if request.user and (request.user.is_staff or request.user.is_superuser):
             request.session['is_manager'] = True
 
         response = get_response(request)

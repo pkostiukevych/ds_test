@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+</style>
+
 <head>
     <script src="/static/js/jquery-3.3.1.min.js"></script>
     <script src="/static/js/cookies.js"></script>
@@ -35,7 +45,15 @@
             </tbody>
         </table>
     </div>
+
+    <footer class="footer">
+        <p><a href="/admin">admin site</a></p>
+
+        <p>&copy; <span id="current-year"></span></p>
+    </footer>
 </body>
+
+
 
 <script>
     function get_data(page) {
@@ -115,6 +133,15 @@
 
 
     $(document).ready(function () {
+
+        var current_year = (new Date()).getFullYear();
+        console.log(current_year);
+        if (current_year == 2018) {
+            $('#current-year').text(2018);
+        } else {
+            $('#current-year').text('2018 - ' + current_year);
+        }
+
         get_data(1);
         var cookies = decodeURIComponent(document.cookie).split(';');
         if (getCookie('is_manager') != 1) {
