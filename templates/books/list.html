@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/cookies.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -18,7 +19,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><a href="/create">add new</a></td>
+                    <td><a href="/create" class="manager_only">add new</a></td>
                 </tr>
                 <tr>
                     <th width="25%">Title</th>
@@ -52,7 +53,7 @@
                         '<tr><td>' + data[i].title + '</td><td>'
                         + $.map(data[i].authors, function(a){ return a.full_name }) + '</td><td>' + data[i].isbn
                         + '</td><td>' + data[i].price + '</td><td>'
-                        + data[i].publish_date + '</td><td><a href="/edit/' + data[i].id +'">edit</a></td></tr>'
+                        + data[i].publish_date + '</td><td><a href="/edit/' + data[i].id +'" class="manager_only">edit</a></td></tr>'
                     );
                 }
 
@@ -115,6 +116,10 @@
 
     $(document).ready(function () {
         get_data(1);
+        var cookies = decodeURIComponent(document.cookie).split(';');
+        if (getCookie('is_manager') != 1) {
+            $('.manager_only').remove();
+        }
     });
 
 </script>
