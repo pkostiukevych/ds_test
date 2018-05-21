@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponseForbidden
 
 from ds_test.models import Author
+from ds_test.api.serializers import author_serializer as serializer
 
 
 def author_api(request, author_id=None):
@@ -28,13 +29,3 @@ def author_api(request, author_id=None):
 
     return HttpResponseForbidden(('GET', 'POST',))
 
-
-def serializer(author):
-
-    return {
-        'id': author.id,
-        'first_name': author.first_name,
-        'middle_name': author.middle_name,
-        'last_name': author.last_name,
-        'full_name': author.full_name()
-    }

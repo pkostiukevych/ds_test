@@ -4,6 +4,7 @@ from math import ceil
 from django.http import JsonResponse, HttpResponseForbidden
 
 from ds_test.models import Book, Author
+from ds_test.api.serializers import book_serializer as serializer
 
 
 def book_api(request, book_id=None):
@@ -54,13 +55,3 @@ def book_api(request, book_id=None):
         return JsonResponse(serializer(book), status=201, safe=False)
 
     return HttpResponseForbidden(('GET', 'POST',))
-
-
-def serializer(book):
-    return {
-        'id': book.id,
-        'title': book.title,
-        'authors': [author.full_name() for author in book.authors.all()],
-        'isbn': book.isbn or '',
-        'price': book.price
-    }

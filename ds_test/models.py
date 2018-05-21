@@ -15,5 +15,6 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author)
     isbn = models.CharField(max_length=17, blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
+    publish_date = models.DateField(blank=False, null=False)
 
     # TODO add isbn correctness check

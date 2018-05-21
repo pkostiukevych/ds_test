@@ -6,15 +6,17 @@
     <title>Title</title>
 </head>
 <body>
-    <p id="page_title">EDIT OR CREATE</p>
+    <p id="page_title"></p>
 
-    <ul>
-        <li>Title: <input id="title" type="text" required/></li>
-        <li>Authors: <select id="authors" multiple></select></li>
-        <li>ISBN: <input id="isbn" type="text" maxlength="17" minlength="9"/></li>
-        <li>Price: <input id="price" type="number" required/></li>
-    </ul>
-
+    <form id="data_form">
+        <ul>
+            <li>Title: <input id="title" name="title" type="text" required/></li>
+            <li>Authors: <select id="authors" name="authors" multiple></select></li>
+            <li>ISBN: <input id="isbn" name="isbn" type="text" maxlength="17" minlength="9"/></li>
+            <li>Price: <input id="price" name="price" type="number" required/></li>
+            <li>Publish date: <input id="publish_date" name="publish_date" type="date"/></li>
+        </ul>
+    </form>
     <button id="save">Save</button>
 </body>
 
@@ -49,6 +51,15 @@
             statusCode: {
                 200: function (resp) {
                     console.log(resp);
+                    if ('authors' in resp) {
+                        $.map(resp.authors, function(author){
+                           $('#authors option[value="'+author.id+'"]').prop('selected', true);
+                        });
+                        delete resp.authors;
+                    }
+                    $.map(resp, function (value, field) {
+                        $('#'+field).val(value);
+                    })
                 },
                 404: function () {
                     alert('Book not found');
@@ -72,11 +83,18 @@
     let item_id = get_page_type();
 
     $('#save').on('click', function () {
-        var data = {
-            title: $('#title').val(),
-            authors: $('#authors').val(),
-            isbn: $('#isbn').val(), price: $('#price').val()
-        };
+        var form_data = $('#data_form').serializeArray();
+        var data = {};
+        $.map(form_data, function (field) {
+            if (data[field.name]) {
+                if (!data[field.name].push) {
+                    data[field.name] = [data[field.name]];
+                }
+                data[field.name].push(field.value || '');
+            } else {
+                data[field.name] = field.value || '';
+            }
+        });
         if (data.title.length && data.price.length) {
 
             var url = '/api/books';
