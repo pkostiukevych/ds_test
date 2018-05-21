@@ -48,7 +48,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ds_test.middlewares.check_user.set_user_type'
 ]
+
 
 ROOT_URLCONF = 'ds_test.urls'
 
