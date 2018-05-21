@@ -42,7 +42,7 @@ def book_api(request, book_id=None):
         request_data = json.loads(request.body)
         if book_id:
             try:
-                book = Book.objects.get(id=1)
+                book = Book.objects.get(id=book_id)
             except Book.DoesNotExist:
                 return JsonResponse(None, status=404, safe=False)
         else:

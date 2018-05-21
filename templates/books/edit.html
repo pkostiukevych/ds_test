@@ -14,7 +14,7 @@
             <li>Authors: <select id="authors" name="authors" multiple></select></li>
             <li>ISBN: <input id="isbn" name="isbn" type="text" maxlength="17" minlength="9"/></li>
             <li>Price: <input id="price" name="price" type="number" required/></li>
-            <li>Publish date: <input id="publish_date" name="publish_date" type="date"/></li>
+            <li>Publish date: <input id="publish_date" name="publish_date" type="date" required/></li>
         </ul>
     </form>
     <button id="save">Save</button>
@@ -96,7 +96,7 @@
                 data[field.name] = field.value || '';
             }
         });
-        if (data.title.length && data.price.length) {
+        if (data.title.length && data.price.length && data.publish_date.length) {
 
             var url = '/api/books';
             if (item_id !== 0) {
@@ -113,7 +113,7 @@
                 }
             });
         } else {
-            alert('title and price are required');
+            alert('title, price and publish date are required');
         }
     });
 
